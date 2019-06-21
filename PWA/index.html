@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA test</title>
+
+    <style>
+        /*App shell css*/
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --grey: #ececec;
+            --white-smoke: #f5f5f5;
+            --dark: #222;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--white-smoke);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        #navbar {
+            height: 70px;
+            background-color: #fff;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        #screens {
+            display: flex;
+            width: 100vw;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+        }
+
+        .screen {
+            flex: 0 0 100vw;
+            min-height: calc(100vh - 70px);
+            scroll-snap-align: start;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 100px auto;
+            background-color: var(--dark);
+
+            border-radius: 100%;
+            -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+            animation: sk-scaleout 1.0s infinite ease-in-out;
+
+            position: relative;
+            top: 25%;
+            left: 0%;
+            transform: translate(-25%, -50%);
+            z-index: 999;
+        }
+
+        @-webkit-keyframes sk-scaleout {
+            0% {
+                -webkit-transform: scale(0)
+            }
+
+            100% {
+                -webkit-transform: scale(1.0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes sk-scaleout {
+            0% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+
+            100% {
+                -webkit-transform: scale(1.0);
+                transform: scale(1.0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- App Shell -->
+    <nav id="navbar">Flights</nav>
+
+    <main id="screens">
+        <div id="screen-flights" class="screen">
+            <div class="spinner"></div>
+        </div>
+        <div id="screen-rewards" class="screen">
+            <div class="spinner"></div>
+        </div>
+        <div id="screen-rewards" class="screen">
+            <div class="spinner"></div>
+        </div>
+    </main>
+
+    <script>
+        // App Shell
+        const debounce = (func, wait, immidiate) => {
+            var timeout;
+            return (...args) => {
+                const later = () => {
+                    timeout = null;
+                    if (!immidiate) func.apply(this, args);
+                };
+                const callNow = immidiate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(this, args);
+            };
+        };
+
+        const screens = document.querySelector('#screens');
+        const navbar = document.querySelector('#navbar');
+
+        const pageNames = ["Flights", "Rewards", "Hotels"];
+
+        const pageTransition = debounce(() => {
+            const index = Math.round(screens.scrollLeft / window.innerWidth);
+            navbar.textContent = pageNames[index]
+        }, 60);
+
+        screens.addEventListener('scroll', pageTransition);
+
+    </script>
+    <script src="main.js"></script>
+</body>
+
+</html>
